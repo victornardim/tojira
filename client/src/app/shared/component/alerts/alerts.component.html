@@ -1,0 +1,7 @@
+<div class="position-absolute m-3 col-md-4"
+     style="z-index: 999; right: 0;">
+   <div *ngFor="let alert of alerts">
+      <app-alert [alert]="alert"
+                 (dismiss)="close(alert)"></app-alert>
+   </div>
+</div>

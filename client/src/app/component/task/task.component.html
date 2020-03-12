@@ -1,0 +1,46 @@
+<div class="card h-100"
+     style="width: 18rem;">
+    <div class="card-body">
+        <div class="row">
+            <h5 class="card-title col-10">{{ task.description }}</h5>
+            <div class="rounded-circle float-right {{ task.status }}"
+                 [title]="task.status"></div>
+        </div>
+        <h6 class="card-subtitle mb-2 text-muted">{{ task.assignee }}</h6>
+        <a class="card-text"
+           href="{{ jiraPrefix }}{{ task.key }}"
+           target="blank"> {{ task.key }}
+        </a>
+        <div class="card-text text-truncate"
+             style="font-size: small;"
+             [title]="task.type"> {{ task.type }}</div>
+        <div class="card-text font-weight-bold text-muted pt-2"> Time entries:</div>
+        <form [formGroup]="taskForm">
+            <div formArrayName="timeEntries">
+                <div *ngFor="let entry of task.timeEntries; let idx = index;"
+                     style="font-size: small;">
+                    <div class="row"
+                         [formGroupName]="idx">
+                        <div class="ml-3"
+                             style="width: 80%">
+                            <div> {{ getTimeTemplate(entry.duration )}}</div>
+                            <div> {{ entry.comment }}</div>
+                        </div>
+                        <div>
+                            <div class="custom-control custom-switch">
+                                <input type="checkbox"
+                                       formControlName="willSend"
+                                       checked
+                                       class="custom-control-input"
+                                       [id]="entry.id">
+                                <label class="custom-control-label"
+                                       [for]="entry.id"
+                                       title="Include this time entry"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

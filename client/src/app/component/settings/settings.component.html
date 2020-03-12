@@ -1,0 +1,75 @@
+<form [formGroup]="settingsForm">
+    <div class="m-2 col-md-5">
+        <div class="form-group">
+            Jira user
+            <input autofocus
+                   type="text"
+                   formControlName="jiraUser"
+                   class="form-control form-control-sm"
+                   placeholder="Jira user"
+                   [ngClass]="{'invalid-form-input': jiraUserHaveErrors() }">
+            <div class="invalid-form-explain"
+                 *ngIf="mustShowJiraUserRequiredError()">
+                Jira user is required.
+            </div>
+        </div>
+        <div class="form-group">
+            Jira token
+            <input type="text"
+                   formControlName="jiraToken"
+                   class="form-control form-control-sm"
+                   placeholder="Jira token"
+                   [ngClass]="{'invalid-form-input': jiraTokenHaveErrors() }">
+            <div class="invalid-form-explain"
+                 *ngIf="mustShowJiraTokenRequiredError()">
+                Jira token is required.
+            </div>
+        </div>
+        <div class="form-group">
+            Jira link prefix
+            <input type="text"
+                   formControlName="jiraPrefix"
+                   class="form-control form-control-sm"
+                   placeholder="Jira link prefix"
+                   [ngClass]="{'invalid-form-input': jiraPrefixHaveErrors() }">
+            <div class="invalid-form-explain"
+                 *ngIf="mustShowJiraPrefixRequiredError()">
+                Jira prefix is required.
+            </div>
+        </div>
+        <div class="form-group">
+            Toggl token
+            <input type="text"
+                   formControlName="togglToken"
+                   class="form-control form-control-sm"
+                   placeholder="Toggl token"
+                   [ngClass]="{'invalid-form-input': togglTokenHaveErrors() }">
+            <div class="invalid-form-explain"
+                 *ngIf="mustShowTogglTokenRequiredError()">
+                Toggl token is required.
+            </div>
+        </div>
+
+        <div class="form-group">
+            Free task key
+            <input type="text"
+                   formControlName="freeTaskKey"
+                   class="form-control form-control-sm"
+                   placeholder="Free task key">
+        </div>
+
+        <div class="form-group">
+            Free task tag
+            <input type="text"
+                   formControlName="freeTaskTag"
+                   class="form-control form-control-sm"
+                   placeholder="Free task tag">
+        </div>
+
+
+        <button type="button"
+                class="btn btn-success btn-sm ml-2 float-right"
+                [disabled]="settingsForm.invalid"
+                (click)="save()">Save</button>
+    </div>
+</form>

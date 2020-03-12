@@ -1,0 +1,31 @@
+.pending {
+    height: 25px;
+    width: 25px;
+    background-color: orange;
+}
+
+.processing {
+    height: 25px;
+    width: 25px;
+    opacity: 1;
+    animation: fade 2s linear;
+    animation-iteration-count: infinite;
+    background-color: lightskyblue;
+}
+
+@keyframes fade {
+    0%,100% { opacity: 0 }
+    50% { opacity: 1 }
+  }
+
+.done {
+    height: 25px;
+    width: 25px;
+    background-color: greenyellow;
+}
+
+.error {
+    height: 25px;
+    width: 25px;
+    background-color: red;
+}

@@ -1,0 +1,76 @@
+<form [formGroup]="filtersForm">
+    <div class="row m-2 pt-2">
+        <input autofocus
+               type="date"
+               formControlName="start"
+               class="form-control form-control-sm mr-2 col-md-2"
+               [ngClass]="{'invalid-form-input': (startHaveErrors() || formHaveErrors()) }"> to
+        <input type="date"
+               formControlName="end"
+               class="form-control form-control-sm ml-2 col-md-2"
+               [ngClass]="{'invalid-form-input': (endHaveErrors() || formHaveErrors()) }">
+
+        <button tojiraDebounce
+                (debounceCallback)="loadTasks()"
+                type="button"
+                class="btn btn-success btn-sm ml-2"
+                [disabled]="filtersForm.invalid">Load tasks</button>
+    </div>
+    <div class="m-2">
+        <div class="invalid-form-explain"
+             *ngIf="mustShowStartRequiredError()">
+            Start date is required.
+        </div>
+        <div class="invalid-form-explain"
+             *ngIf="mustShowStartDateInThePastError()">
+            Start date can't be in the past.
+        </div>
+        <div class="invalid-form-explain"
+             *ngIf="mustShowStartDateIsAbsurdError()">
+            Start date can't be further than 31/12/9999 23:59:59.
+        </div>
+
+        <div class="invalid-form-explain"
+             *ngIf="mustShowEndRequiredError()">
+            End date is required.
+        </div>
+        <div class="invalid-form-explain"
+             *ngIf="mustShowEndDateInThePastError()">
+            End date can't be in the past.
+        </div>
+        <div class="invalid-form-explain"
+             *ngIf="mustShowEndDateIsLesserThanStartDate()">
+            End date can't be lesser than start date.
+        </div>
+        <div class="invalid-form-explain"
+             *ngIf="mustShowEndDateIsAbsurdError()">
+            End date can't be further than 31/12/9999.
+        </div>
+    </div>
+
+</form>
+
+<div class="col-md-12 my-4">
+    <ngb-progressbar showValue="true"
+                     type="success"
+                     [value]="completion"></ngb-progressbar>
+</div>
+
+<div class="row m-2 col-md-12 overflow-auto"
+     style="max-height: 65vh;">
+    <tojira-task *ngFor="let task of tasks"
+                 class="m-2"
+                 [task]="task"
+                 [parentGroup]="tasksForm"></tojira-task>
+</div>
+
+<div class="footer col-md-12 m-2">
+    <div class="h-divider m-2"
+         style="width: 140vh"></div>
+
+    <button tojiraDebounce
+            (debounceCallback)="registerWorklogs()"
+            type="button"
+            class="btn btn-success btn-sm ml-2"
+            [disabled]="!allTasksAreLoaded()">Register worklogs</button>
+</div>
