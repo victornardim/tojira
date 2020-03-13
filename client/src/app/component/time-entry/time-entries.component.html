@@ -14,7 +14,7 @@
                 (debounceCallback)="loadTasks()"
                 type="button"
                 class="btn btn-success btn-sm ml-2"
-                [disabled]="filtersForm.invalid">Load tasks</button>
+                [disabled]="filtersForm.invalid || !settingsAreSetted()">Load tasks</button>
     </div>
     <div class="m-2">
         <div class="invalid-form-explain"
@@ -72,5 +72,5 @@
             (debounceCallback)="registerWorklogs()"
             type="button"
             class="btn btn-success btn-sm ml-2"
-            [disabled]="!allTasksAreLoaded()">Register worklogs</button>
+            [disabled]="!allTasksAreLoaded() || !settingsAreSetted()">Register worklogs</button>
 </div>

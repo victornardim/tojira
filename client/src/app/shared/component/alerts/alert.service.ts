@@ -10,7 +10,7 @@ export class AlertService {
     alerts: Alert[] = [];
     alertsSubject = new Subject<Alert[]>();
 
-    error(message: string) {
+    public error(message: string) {
         const alert = {
             message,
             time: new Date(),
@@ -21,7 +21,18 @@ export class AlertService {
         this.alertsSubject.next(this.alerts);
     }
 
-    success(message: string) {
+    public warning(message: string) {
+        const alert = {
+            message,
+            time: new Date(),
+            type: AlertType.WARNING
+        } as Alert;
+
+        this.alerts.push(alert);
+        this.alertsSubject.next(this.alerts);
+    }
+
+    public success(message: string) {
         const alert = {
             message,
             time: new Date(),
@@ -32,7 +43,7 @@ export class AlertService {
         this.alertsSubject.next(this.alerts);
     }
 
-    getAlertsSubject(): Subject<Alert[]> {
+    public getAlertsSubject(): Subject<Alert[]> {
         return this.alertsSubject;
     }
 }

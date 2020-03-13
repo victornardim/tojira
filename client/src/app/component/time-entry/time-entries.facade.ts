@@ -45,14 +45,23 @@ export class TimeEntriesFacade {
     private tasksSubscriptions: Subscription[] = [];
     private worklogProcessSubscription: Subscription;
 
-    public getAllTasksToRegisterTimeEntry(start: string, end: string) {
+    public settingsAreSetted(): boolean {
+        return !!this.settings.jiraToken &&
+            !!this.settings.jiraUser &&
+            !!this.settings.jiraPrefix &&
+            !!this.settings.togglToken;
+    }
+
+    public loadTasks(start: string, end: string) {
         this.timeEntriesSubscription = this.toggl.getTimeEntries(start, end, this.getTogglToken())
             .subscribe((timeEntries: any[]) => {
                 this.clear();
                 this.getAllTimeEntries(timeEntries);
                 this.getUniqueTaskKeys();
-                this.taskQuantity = this.uniqueTaskKeys.length;
+                this.resetCompletion(this.uniqueTaskKeys.length);
                 this.getAllTasks();
+            }, (error) => {
+                this.alertService.error(error.message);
             });
     }
 
@@ -86,6 +95,12 @@ export class TimeEntriesFacade {
         );
     }
 
+    private resetCompletion(total: number) {
+        this.taskQuantity = total;
+        this.processedTasks = 0;
+        this.setCompletion(null);
+    }
+
     private getAllTasks() {
         this.uniqueTaskKeys.forEach(taskKey => {
             this.getTask(taskKey);
@@ -101,7 +116,7 @@ export class TimeEntriesFacade {
 
                 this.tasksSubject.next(this.tasks);
 
-                this.setCompletion(TimeEntryOperation.LOAD);
+                this.doProgress(TimeEntryOperation.LOAD);
             });
 
         this.tasksSubscriptions.push(subscription);
@@ -115,16 +130,27 @@ export class TimeEntriesFacade {
         return this.timeEntries.filter(timeEntry => extractTaskKey(timeEntry.description) === task.key);
     }
 
-    private setCompletion(operation: TimeEntryOperation) {
+    private doProgress(operation: TimeEntryOperation) {
         this.processedTasks++;
+        this.setCompletion(operation);
+    }
+
+    private setCompletion(operation: TimeEntryOperation) {
         const completion = (this.processedTasks / (this.taskQuantity / 100));
         this.completionSubject.next(completion);
 
         if (completion === 100) {
             this.doUnsubscribeAll();
-
             this.alertService.success(this.getCompletionMessage(operation));
         }
+    }
+
+    private doUnsubscribeAll() {
+        doUnsubscribe(this.timeEntriesSubscription);
+        this.timeEntriesSubscription = null;
+
+        this.tasksSubscriptions.forEach(subscription => doUnsubscribe(subscription));
+        this.tasksSubscriptions.splice(0, this.tasksSubscriptions.length);
     }
 
     private getCompletionMessage(operation: TimeEntryOperation): string {
@@ -137,23 +163,12 @@ export class TimeEntriesFacade {
         return '';
     }
 
-    private doUnsubscribeAll() {
-        doUnsubscribe(this.timeEntriesSubscription);
-        this.timeEntriesSubscription = null;
-
-        this.tasksSubscriptions.forEach(subscription => doUnsubscribe(subscription));
-        this.tasksSubscriptions.splice(0, this.tasksSubscriptions.length);
-    }
-
     public registerWorklogs(timeEntriesId: number[]) {
         this.listenToProcess();
 
-        this.taskQuantity = timeEntriesId.length;
-        this.processedTasks = 0;
-        this.setCompletion(TimeEntryOperation.REGISTRATION);
+        this.resetCompletion(timeEntriesId.length);
 
         const tasksToRegisterWorklog = this.getTasksToRegisterWorklog(timeEntriesId);
-
         this.worklogProcessService.init(tasksToRegisterWorklog);
 
         tasksToRegisterWorklog.forEach(taskToRegisterWorklog => {
@@ -201,7 +216,7 @@ export class TimeEntriesFacade {
             }, (error) => {
                 this.worklogProcessService.throwError(taskKey);
             }, () => {
-                this.setCompletion(TimeEntryOperation.REGISTRATION);
+                this.doProgress(TimeEntryOperation.REGISTRATION);
             });
     }
 

@@ -6,8 +6,10 @@
             <div class="rounded-circle float-right {{ task.status }}"
                  [title]="task.status"></div>
         </div>
-        <h6 class="card-subtitle mb-2 text-muted">{{ task.assignee }}</h6>
+        <h6 class="card-subtitle mb-2 text-muted text-truncate"
+            [title]="task.assignee">{{ task.assignee }}</h6>
         <a class="card-text"
+           title="Click to open your task in Jira"
            href="{{ jiraPrefix }}{{ task.key }}"
            target="blank"> {{ task.key }}
         </a>
@@ -23,7 +25,7 @@
                          [formGroupName]="idx">
                         <div class="ml-3"
                              style="width: 80%">
-                            <div> {{ getTimeTemplate(entry.duration )}}</div>
+                            <div> {{ getTimeTemplate(entry.duration) }}</div>
                             <div> {{ entry.comment }}</div>
                         </div>
                         <div>

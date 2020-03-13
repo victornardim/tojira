@@ -5,6 +5,7 @@ import { doUnsubscribe } from 'src/app/shared/common.subscription';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormArray } from '@angular/forms';
 import { dateIsAbsurdValidator } from 'src/app/shared/validators/date-is-absurd.validator';
 import { TimeEntriesFacade } from './time-entries.facade';
+import { AlertService } from 'src/app/shared/component/alerts/alert.service';
 
 const invalidDateRange: ValidatorFn = (formGroup: FormGroup) => {
     const start = formGroup.controls.start.value;
@@ -24,7 +25,8 @@ const invalidDateRange: ValidatorFn = (formGroup: FormGroup) => {
 export class TimeEntriesComponent implements OnInit, OnDestroy {
     constructor(
         private timeEntriesFacade: TimeEntriesFacade,
-        private formBuilder: FormBuilder) { }
+        private formBuilder: FormBuilder,
+        private alertService: AlertService) { }
 
     filtersForm: FormGroup;
     tasksForm: FormArray;
@@ -39,6 +41,14 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
         this.formInit();
         this.listenToTaskLoad();
         this.listenToCompletion();
+
+        if (!this.settingsAreSetted()) {
+            this.alertService.warning('Some of the required settings isn\'t setted');
+        }
+    }
+
+    public settingsAreSetted(): boolean {
+        return this.timeEntriesFacade.settingsAreSetted();
     }
 
     ngOnDestroy() {
@@ -87,7 +97,7 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
         const end = new Date(`${this.end.value} 23:59:59`);
 
         this.timeEntriesFacade
-            .getAllTasksToRegisterTimeEntry(start.toISOString(), end.toISOString());
+            .loadTasks(start.toISOString(), end.toISOString());
     }
 
     private clear() {
@@ -98,7 +108,14 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
     }
 
     public registerWorklogs() {
-        this.timeEntriesFacade.registerWorklogs(this.getTimeEntriesToRegsiter());
+        const timeEntriesToRegister = this.getTimeEntriesToRegsiter();
+
+        if (!timeEntriesToRegister.length) {
+            this.alertService.warning('Select unless one time entry to register');
+            return;
+        }
+
+        this.timeEntriesFacade.registerWorklogs(timeEntriesToRegister);
     }
 
     private getTimeEntriesToRegsiter(): number[] {
