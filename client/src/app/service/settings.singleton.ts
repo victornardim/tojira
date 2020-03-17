@@ -19,8 +19,7 @@ export class SettingsSingleton {
             jiraUser: this.database.load(SettingsStorage.JIRA_USER),
             jiraPrefix: this.database.load(SettingsStorage.JIRA_PREFIX),
             togglToken: this.database.load(SettingsStorage.TOGGL_TOKEN),
-            freeTaskKey: this.database.load(SettingsStorage.FREE_TASK_KEY),
-            freeTaskTag: this.database.load(SettingsStorage.FREE_TASK_TAG)
+            jiraTasksAllowedPrefixes: this.database.load(SettingsStorage.JIRA_TASKS_ALLOWED_PREFIXES)
         } as Settings;
     }
 
@@ -36,15 +35,11 @@ export class SettingsSingleton {
         return this.settings.jiraPrefix;
     }
 
-    public get freeTaskKey(): string {
-        return this.settings.freeTaskKey;
-    }
-
-    public get freeTaskTag(): string {
-        return this.settings.freeTaskTag;
-    }
-
     public get togglToken(): string {
         return this.settings.togglToken;
+    }
+
+    public get jiraTasksAllowedPrefixes(): string {
+        return this.settings.jiraTasksAllowedPrefixes;
     }
 }

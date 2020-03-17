@@ -55,6 +55,11 @@ export class TimeEntriesFacade {
     public loadTasks(start: string, end: string) {
         this.timeEntriesSubscription = this.toggl.getTimeEntries(start, end, this.getTogglToken())
             .subscribe((timeEntries: any[]) => {
+                if (!timeEntries.length) {
+                    this.alertService.warning('No time entries for the period');
+                    return;
+                }
+
                 this.clear();
                 this.getAllTimeEntries(timeEntries);
                 this.getUniqueTaskKeys();
@@ -86,12 +91,16 @@ export class TimeEntriesFacade {
     }
 
     private isJiraTask(timeEntry: any): boolean {
-        return !!extractTaskKey(timeEntry.description);
+        return !!extractTaskKey(timeEntry.description, this.getJiraTasksAllowedPrefixes());
+    }
+
+    private getJiraTasksAllowedPrefixes(): string[] {
+        return this.settings.jiraTasksAllowedPrefixes.split(';');
     }
 
     private getUniqueTaskKeys() {
         this.uniqueTaskKeys = _.unique(
-            this.timeEntries.map(timeEntry => extractTaskKey(timeEntry.description))
+            this.timeEntries.map(timeEntry => extractTaskKey(timeEntry.description, this.getJiraTasksAllowedPrefixes()))
         );
     }
 
@@ -127,7 +136,7 @@ export class TimeEntriesFacade {
     }
 
     private getTaskTimeEntries(task: Task): TimeEntry[] {
-        return this.timeEntries.filter(timeEntry => extractTaskKey(timeEntry.description) === task.key);
+        return this.timeEntries.filter(timeEntry => extractTaskKey(timeEntry.description, this.getJiraTasksAllowedPrefixes()) === task.key);
     }
 
     private doProgress(operation: TimeEntryOperation) {

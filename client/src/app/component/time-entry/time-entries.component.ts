@@ -62,9 +62,13 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
     }
 
     private filtersFormInit() {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        const today = now.toISOString().slice(0, 10);
+
         this.filtersForm = this.formBuilder.group({
-            start: [null, [Validators.required, dateIsAbsurdValidator]],
-            end: [null, [Validators.required, dateIsAbsurdValidator]]
+            start: [today, [Validators.required, dateIsAbsurdValidator]],
+            end: [today, [Validators.required, dateIsAbsurdValidator]]
         }, { validator: invalidDateRange });
     }
 

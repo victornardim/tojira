@@ -3,6 +3,5 @@ export interface Settings {
     jiraToken: string;
     jiraPrefix: string;
     togglToken: string;
-    freeTaskKey: string;
-    freeTaskTag: string;
+    jiraTasksAllowedPrefixes: string;
 }

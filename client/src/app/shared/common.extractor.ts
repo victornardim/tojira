@@ -1,12 +1,32 @@
-export function extractTaskKey(text: string): string {
+export function extractTaskKey(text: string, allowedPrefixes: string[]): string {
+    if (!!text && !!allowedPrefixes.length) {
+        for (let idx = 0; idx < allowedPrefixes.length; idx++) {
+            const prefix = allowedPrefixes[idx];
+            const regexString = `${prefix}-\\d+`;
+            const regex = new RegExp(regexString).exec(text);
+
+            if (!!regex) {
+                const key = regex[0];
+
+                if (!!key) {
+                    return key;
+                }
+            }
+        }
+    }
+
+    return '';
+}
+
+export function extractTaskComment(text: string): string {
     if (!!text) {
-        const regex = /T0800-\d+/g.exec(text);
+        const regex = /(?:\()(.+?)(?:\))/g.exec(text);
 
         if (!!regex) {
-            const key = regex[0];
+            const comment = regex[1];
 
-            if (!!key) {
-                return key;
+            if (!!comment) {
+                return comment;
             }
         }
     }

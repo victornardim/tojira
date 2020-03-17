@@ -38,6 +38,21 @@
             </div>
         </div>
         <div class="form-group">
+            Jira tasks allowed prefixes
+            <input type="text"
+                   formControlName="jiraTasksAllowedPrefixes"
+                   class="form-control form-control-sm"
+                   placeholder="Jira allowed prefixes"
+                   [ngClass]="{'invalid-form-input': jiraTasksAllowedPrefixesHaveErrors() }"
+                   ngbPopover="Enter the prefixes splited by ' ; '"
+                   triggers="mouseenter:mouseleave"
+                   placement="right">
+            <div class="invalid-form-explain"
+                 *ngIf="mustShowJiraTasksAllowedPrefixesRequiredError()">
+                Jira tasks allowed prefixes is required.
+            </div>
+        </div>
+        <div class="form-group">
             Toggl token
             <input type="text"
                    formControlName="togglToken"
@@ -49,23 +64,6 @@
                 Toggl token is required.
             </div>
         </div>
-
-        <div class="form-group">
-            Free task key
-            <input type="text"
-                   formControlName="freeTaskKey"
-                   class="form-control form-control-sm"
-                   placeholder="Free task key">
-        </div>
-
-        <div class="form-group">
-            Free task tag
-            <input type="text"
-                   formControlName="freeTaskTag"
-                   class="form-control form-control-sm"
-                   placeholder="Free task tag">
-        </div>
-
 
         <button type="button"
                 class="btn btn-success btn-sm ml-2 float-right"

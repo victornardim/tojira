@@ -17,6 +17,7 @@ export class SettingsComponent implements OnInit {
     ngOnInit() {
         this.initForm();
         this.load();
+        this.settingsForm.markAllAsTouched();
     }
 
     private initForm() {
@@ -25,8 +26,7 @@ export class SettingsComponent implements OnInit {
             jiraUser: [null, [Validators.required, justWhitespaceValidator]],
             jiraPrefix: [null, [Validators.required, justWhitespaceValidator]],
             togglToken: [null, [Validators.required, justWhitespaceValidator]],
-            freeTaskKey: [null],
-            freeTaskTag: [null]
+            jiraTasksAllowedPrefixes: [null, [Validators.required, justWhitespaceValidator]]
         });
     }
 
@@ -84,5 +84,17 @@ export class SettingsComponent implements OnInit {
 
     public togglTokenHaveErrors(): boolean {
         return (this.togglToken.errors && this.togglToken.touched);
+    }
+
+    public get jiraTasksAllowedPrefixes(): AbstractControl {
+        return this.settingsForm.controls.jiraTasksAllowedPrefixes;
+    }
+
+    public mustShowJiraTasksAllowedPrefixesRequiredError(): boolean {
+        return (this.jiraTasksAllowedPrefixesHaveErrors() && (this.jiraTasksAllowedPrefixes.errors.required || this.jiraTasksAllowedPrefixes.errors.justWhitespace));
+    }
+
+    public jiraTasksAllowedPrefixesHaveErrors(): boolean {
+        return (this.jiraTasksAllowedPrefixes.errors && this.jiraTasksAllowedPrefixes.touched);
     }
 }

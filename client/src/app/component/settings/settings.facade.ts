@@ -19,14 +19,7 @@ export class SettingsFacade {
         this.database.insert(SettingsStorage.JIRA_USER, settings.jiraUser);
         this.database.insert(SettingsStorage.JIRA_PREFIX, settings.jiraPrefix);
         this.database.insert(SettingsStorage.TOGGL_TOKEN, settings.togglToken);
-
-        if (!!settings.freeTaskKey) {
-            this.database.insert(SettingsStorage.FREE_TASK_KEY, settings.freeTaskKey);
-        }
-
-        if (settings.freeTaskTag) {
-            this.database.insert(SettingsStorage.FREE_TASK_TAG, settings.freeTaskTag);
-        }
+        this.database.insert(SettingsStorage.JIRA_TASKS_ALLOWED_PREFIXES, settings.jiraTasksAllowedPrefixes);
 
         this.singleton.loadSettings();
         this.alertService.success('Settings saved successfully');
@@ -38,8 +31,7 @@ export class SettingsFacade {
             jiraUser: this.database.load(SettingsStorage.JIRA_USER),
             jiraPrefix: this.database.load(SettingsStorage.JIRA_PREFIX),
             togglToken: this.database.load(SettingsStorage.TOGGL_TOKEN),
-            freeTaskKey: this.database.load(SettingsStorage.FREE_TASK_KEY),
-            freeTaskTag: this.database.load(SettingsStorage.FREE_TASK_TAG)
+            jiraTasksAllowedPrefixes: this.database.load(SettingsStorage.JIRA_TASKS_ALLOWED_PREFIXES)
         } as Settings;
     }
 }
