@@ -1,4 +1,5 @@
 import { TimeEntry } from '../model/time-entry.interface';
+import { extractTaskComment } from '../shared/common.extractor';
 
 export class TimeEntryTranslator {
     timeEntry: any;
@@ -10,7 +11,8 @@ export class TimeEntryTranslator {
             id: this.timeEntry.id,
             description: this.timeEntry.description,
             duration: this.timeEntry.duration,
-            tag: this.getTag()
+            tag: this.getTag(),
+            comment: this.getComment()
         } as TimeEntry;
     }
 
@@ -20,5 +22,9 @@ export class TimeEntryTranslator {
         }
 
         return '';
+    }
+
+    private getComment(): string {
+        return extractTaskComment(this.timeEntry.description);
     }
 }

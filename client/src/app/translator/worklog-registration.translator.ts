@@ -63,18 +63,26 @@ export class WorklogRegistrationTranslator {
     }
 
     private getContent(timeEntry: TimeEntry): any[] {
-        return [
-            {
-                type: 'paragraph',
-                content: [this.getTextContent(timeEntry)]
-            }
-        ];
+        const content = [];
+
+        content.push(this.getComment(`TOGGL_ID:${timeEntry.id}`));
+
+        if (!!timeEntry.comment) {
+            content.push(this.getComment(timeEntry.comment));
+        }
+
+        return content;
     }
 
-    private getTextContent(timeEntry: TimeEntry): any {
+    private getComment(comment: string): any {
         return {
-            text: `TOGGL_ID:${timeEntry.id}`,
-            type: 'text'
+            type: 'paragraph',
+            content: [
+                {
+                    text: comment,
+                    type: 'text'
+                }
+            ]
         }
     }
 }

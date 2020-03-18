@@ -3,4 +3,5 @@ export interface TimeEntry {
     duration: number;
     description: string;
     tag: string;
+    comment: string;
 }

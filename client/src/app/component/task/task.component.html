@@ -1,21 +1,31 @@
-<div class="card h-100"
-     style="width: 18rem;">
+<div class="card h-100">
     <div class="card-body">
         <div class="row">
             <h5 class="card-title col-10">{{ task.description }}</h5>
             <div class="rounded-circle float-right {{ task.status }}"
-                 [title]="task.status"></div>
+                 [ngbPopover]="task.status"
+                 triggers="mouseenter:mouseleave"
+                 placement="bottom"></div>
         </div>
         <h6 class="card-subtitle mb-2 text-muted text-truncate"
-            [title]="task.assignee">{{ task.assignee }}</h6>
+            [ngbPopover]="task.assignee"
+            triggers="mouseenter:mouseleave"
+            [openDelay]="750"
+            container="body">{{ task.assignee }}</h6>
         <a class="card-text"
-           title="Click to open your task in Jira"
+           ngbPopover="Click to open your task on Jira"
+           triggers="mouseenter:mouseleave"
+           [openDelay]="750"
+           container="body"
            href="{{ jiraPrefix }}{{ task.key }}"
            target="blank"> {{ task.key }}
         </a>
         <div class="card-text text-truncate"
              style="font-size: small;"
-             [title]="task.type"> {{ task.type }}</div>
+             [ngbPopover]="task.type"
+             triggers="mouseenter:mouseleave"
+             [openDelay]="750"
+             container="body"> {{ task.type }}</div>
         <div class="card-text font-weight-bold text-muted pt-2"> Time entries:</div>
         <form [formGroup]="taskForm">
             <div formArrayName="timeEntries">
@@ -24,21 +34,19 @@
                     <div class="row"
                          [formGroupName]="idx">
                         <div class="ml-3"
-                             style="width: 80%">
-                            <div> {{ getTimeTemplate(entry.duration) }}</div>
-                            <div> {{ entry.comment }}</div>
+                             style="width: 75%">
+                            <span [ngbPopover]="entry.comment"
+                                  triggers="mouseenter:mouseleave"
+                                  container="body"> {{ getTimeTemplate(entry.duration) }}</span>
                         </div>
-                        <div>
-                            <div class="custom-control custom-switch">
-                                <input type="checkbox"
-                                       formControlName="willSend"
-                                       checked
-                                       class="custom-control-input"
-                                       [id]="entry.id">
-                                <label class="custom-control-label"
-                                       [for]="entry.id"
-                                       title="Include this time entry"></label>
-                            </div>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox"
+                                   formControlName="willSend"
+                                   checked
+                                   class="custom-control-input"
+                                   [id]="entry.id">
+                            <label class="custom-control-label"
+                                   [for]="entry.id"></label>
                         </div>
                     </div>
                 </div>

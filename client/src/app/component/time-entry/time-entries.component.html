@@ -60,6 +60,7 @@
      style="max-height: 65vh;">
     <tojira-task *ngFor="let task of tasks"
                  class="m-2"
+                 class="col-md-4"
                  [task]="task"
                  [parentGroup]="tasksForm"></tojira-task>
 </div>

@@ -145,7 +145,7 @@ export class TimeEntriesFacade {
     }
 
     private setCompletion(operation: TimeEntryOperation) {
-        const completion = (this.processedTasks / (this.taskQuantity / 100));
+        const completion = Math.round(this.processedTasks / (this.taskQuantity / 100));
         this.completionSubject.next(completion);
 
         if (completion === 100) {

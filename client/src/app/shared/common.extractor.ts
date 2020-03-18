@@ -1,9 +1,11 @@
 export function extractTaskKey(text: string, allowedPrefixes: string[]): string {
     if (!!text && !!allowedPrefixes.length) {
-        for (let idx = 0; idx < allowedPrefixes.length; idx++) {
-            const prefix = allowedPrefixes[idx];
-            const regexString = `${prefix}-\\d+`;
-            const regex = new RegExp(regexString).exec(text);
+        const prefixFound = allowedPrefixes.find(prefix => {
+            return new RegExp(`${prefix}-\\d+`).test(text);
+        });
+
+        if (!!prefixFound) {
+            const regex = new RegExp(`${prefixFound}-\\d+`).exec(text);
 
             if (!!regex) {
                 const key = regex[0];
