@@ -3,6 +3,7 @@ import { TimeInSeconds } from 'src/app/shared/time-in-seconds.enum';
 import { Task } from 'src/app/model/task.interface';
 import { SettingsSingleton } from 'src/app/service/settings.singleton';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { WorklogStatus } from 'src/app/model/worklog-status.enum';
 
 @Component({
     selector: 'tojira-task',
@@ -59,6 +60,22 @@ export class TaskComponent implements OnInit {
         }
 
         return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    public getStatusIcon(): string {
+        switch (this.task.status) {
+            case WorklogStatus.PENDING:
+                return 'fas fa-pause-circle fa-2x';
+
+            case WorklogStatus.PROCESSING:
+                return 'far fa-paper-plane fa-2x';
+
+            case WorklogStatus.ERROR:
+                return 'fas fa-times-circle fa-2x';
+
+            case WorklogStatus.DONE:
+                return 'fas fa-check-circle fa-2x';
+        }
     }
 
     public get jiraPrefix(): string {

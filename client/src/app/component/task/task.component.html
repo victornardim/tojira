@@ -2,10 +2,11 @@
     <div class="card-body">
         <div class="row">
             <h5 class="card-title col-10">{{ task.description }}</h5>
-            <div class="rounded-circle float-right {{ task.status }}"
-                 [ngbPopover]="task.status"
-                 triggers="mouseenter:mouseleave"
-                 placement="bottom"></div>
+            <i class="float-right {{ task.status }} {{ getStatusIcon() }}"
+               style="height: 32px; width: 32px;"
+               [ngbPopover]="task.status"
+               triggers="mouseenter:mouseleave"
+               placement="bottom"></i>
         </div>
         <h6 class="card-subtitle mb-2 text-muted text-truncate"
             [ngbPopover]="task.assignee"
@@ -35,9 +36,12 @@
                          [formGroupName]="idx">
                         <div class="ml-3"
                              style="width: 75%">
-                            <span [ngbPopover]="entry.comment"
-                                  triggers="mouseenter:mouseleave"
-                                  container="body"> {{ getTimeTemplate(entry.duration) }}</span>
+                            <span> {{ getTimeTemplate(entry.duration) }}</span>
+                            <i class="far fa-comment ml-2"
+                               *ngIf="!!entry.comment"
+                               [ngbPopover]="entry.comment"
+                               triggers="mouseenter:mouseleave"
+                               container="body"></i>
                         </div>
                         <div class="custom-control custom-switch">
                             <input type="checkbox"

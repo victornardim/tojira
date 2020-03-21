@@ -27,7 +27,7 @@ app.get('/jira/task/:key', (req, res) => {
     };
 
     request.get(options, function(err, resp, body) {
-        res.status(200).send(body);
+        res.status(resp.statusCode).send(body);
     });
 });
 
@@ -45,7 +45,7 @@ app.get('/toggl/timeEntries/:start/:end', (req, res) => {
     };
 
     request.get(options, function(err, resp, body) {
-        res.status(200).send(body);
+        res.status(resp.statusCode).send(body);
     });
 });
 
@@ -63,7 +63,7 @@ app.delete('/jira/task/:key/worklog/:id', (req, res) => {
     };
 
     request.delete(options, function(err, resp, body) {
-        res.status(200).send(body);
+        res.status(resp.statusCode).send(body);
     });
 });
 
@@ -82,7 +82,7 @@ app.post('/jira/task/:key/worklog', (req, res) => {
     };
 
     request.post(options, function(err, resp, body) {
-        res.status(200).send(body);
+        res.status(resp.statusCode).send(body);
     });
 });
 

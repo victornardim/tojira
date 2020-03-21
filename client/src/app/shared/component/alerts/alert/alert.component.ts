@@ -1,5 +1,6 @@
 import { Component, Input, Output, OnInit, EventEmitter } from '@angular/core';
 import { Alert } from '../alert.interface';
+import { AlertType } from '../alert.enum';
 
 @Component({
     selector: 'app-alert',
@@ -34,5 +35,24 @@ export class AlertComponent implements OnInit {
 
     public mouseOut() {
         this.setTimer();
+    }
+
+    public getTypeIcon(): string {
+        switch (this.alert.type) {
+            case AlertType.SUCCESS:
+                return 'fas fa-check-circle';
+
+            case AlertType.WARNING:
+                return 'fas fa-exclamation-triangle';
+
+            case AlertType.DANGER:
+                return 'fas fa-times-circle';
+
+            case AlertType.INFO:
+                return 'fas fa-info-circle';
+
+            default:
+                return '';
+        }
     }
 }

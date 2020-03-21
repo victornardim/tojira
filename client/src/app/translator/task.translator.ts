@@ -16,7 +16,7 @@ export class TaskTranslator {
         this.worklogTranslator = new WorklogTranslator();
     }
 
-    public translate(task: any): Task {
+    public translate(task: any, timeEntries: any[]): Task {
         this.task = task;
 
         return {
@@ -28,7 +28,7 @@ export class TaskTranslator {
             type: task.fields.issuetype.name,
             subtasks: this.getSubtasks(),
             worklogs: this.getWorklogs(),
-            timeEntries: null,
+            timeEntries: timeEntries,
             status: WorklogStatus.PENDING
         } as Task;
     }

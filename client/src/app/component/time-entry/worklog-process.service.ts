@@ -31,7 +31,9 @@ export class WorklogProcessService {
             processFound.processedWorklog++;
 
             if (processFound.processedWorklog === processFound.totalWorklog) {
-                processFound.status = WorklogStatus.DONE;
+                if (processFound.status !== WorklogStatus.ERROR) {
+                    processFound.status = WorklogStatus.DONE;
+                }
             }
         }
 

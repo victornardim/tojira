@@ -1,5 +1,14 @@
-<ngb-alert [type]="alert.type"
-           (close)="close()"
-           (mouseenter)="mouseIn()"
-           (mouseleave)="mouseOut()"
-           class="slide-in">{{ alert.message }}</ngb-alert>
+<div class="{{ alert.type }} slide-in rounded p-3 mb-2 row"
+     (mouseenter)="mouseIn()"
+     (mouseleave)="mouseOut()">
+    <div class="col-md-11">
+        <i class="{{ getTypeIcon() }} mr-2"></i>
+        <span style="color: black">
+            {{ alert.message }}
+        </span>
+    </div>
+    <div class="col-md-1">
+        <button (click)="close()"
+                class="close float-right">&times;</button>
+    </div>
+</div>

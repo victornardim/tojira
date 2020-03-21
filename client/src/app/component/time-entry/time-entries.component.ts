@@ -39,6 +39,7 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.formInit();
+        this.timeEntriesFacade.init();
         this.listenToTaskLoad();
         this.listenToCompletion();
 
