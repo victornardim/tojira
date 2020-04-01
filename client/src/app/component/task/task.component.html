@@ -36,7 +36,8 @@
                          [formGroupName]="idx">
                         <div class="ml-3"
                              style="width: 75%">
-                            <span> {{ getTimeTemplate(entry.duration) }}</span>
+                            <span> {{ entry.at.toLocaleDateString() }} - {{ getTimeTemplate(entry.duration) }}
+                            </span>
                             <i class="far fa-comment ml-2"
                                *ngIf="!!entry.comment"
                                [ngbPopover]="entry.comment"

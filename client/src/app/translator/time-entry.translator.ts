@@ -12,7 +12,8 @@ export class TimeEntryTranslator {
             description: this.timeEntry.description,
             duration: this.timeEntry.duration,
             tag: this.getTag(),
-            comment: this.getComment()
+            comment: this.getComment(),
+            at: this.getEntryMoment()
         } as TimeEntry;
     }
 
@@ -26,5 +27,11 @@ export class TimeEntryTranslator {
 
     private getComment(): string {
         return extractTaskComment(this.timeEntry.description);
+    }
+
+    private getEntryMoment(): Date {
+        const moment = new Date(this.timeEntry.start);
+        moment.setMinutes(moment.getMinutes() - moment.getTimezoneOffset());
+        return moment;
     }
 }

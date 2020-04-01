@@ -1,6 +1,7 @@
 <form [formGroup]="filtersForm">
     <div class="row m-2 pt-2">
-        <input type="date"
+        <input autofocus
+               type="date"
                formControlName="start"
                class="form-control form-control-sm mr-2 col-md-2 col-sm-2"
                [ngClass]="{'invalid-form-input': (startHaveErrors() || formHaveErrors()) }">
@@ -64,6 +65,12 @@
                  [parentGroup]="tasksForm"></tojira-task>
 </div>
 
+<div class="m-2"
+     *ngIf="!!totalTime">
+    <i class="fas fa-stopwatch fa-2x mr-1"></i>
+    Total time: {{ getFormattedTotalTime() }}
+</div>
+
 <div class="footer col-md-12 m-2">
     <div class="h-divider m-2"
          style="width: 140vh"></div>
@@ -72,5 +79,5 @@
             (debounceCallback)="registerWorklogs()"
             type="button"
             class="btn btn-success btn-sm ml-2"
-            [disabled]="!allTasksAreLoaded() || !settingsAreSetted()">Register worklogs</button>
+            [disabled]="shouldDisableRegisterWorklogsButton()">Register worklogs</button>
 </div>

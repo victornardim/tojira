@@ -1,6 +1,7 @@
 import { WorklogRegistration } from '../model/worklog-registration.interface';
 import { Task } from '../model/task.interface';
 import { TimeEntry } from '../model/time-entry.interface';
+import { getTimeISOStringWithTimezoneOffset } from '../shared/common.date';
 
 export class WorklogRegistrationTranslator {
     task: Task;
@@ -50,7 +51,8 @@ export class WorklogRegistrationTranslator {
         return {
             timeSpentSeconds: timeEntry.duration,
             oldId,
-            comment: this.getComments(timeEntry)
+            comment: this.getComments(timeEntry),
+            started: getTimeISOStringWithTimezoneOffset(timeEntry.at)
         };
     }
 

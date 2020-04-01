@@ -4,4 +4,5 @@ export interface TimeEntry {
     description: string;
     tag: string;
     comment: string;
+    at: Date;
 }

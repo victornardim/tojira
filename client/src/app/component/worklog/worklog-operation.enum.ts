@@ -1,4 +1,4 @@
-export enum TimeEntryOperation {
+export enum WorklogOperation {
     LOAD = 'load',
     REGISTRATION = 'registration'
 }

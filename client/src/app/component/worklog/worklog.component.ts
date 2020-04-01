@@ -4,8 +4,9 @@ import { Subscription } from 'rxjs';
 import { doUnsubscribe } from 'src/app/shared/common.subscription';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormArray } from '@angular/forms';
 import { dateIsAbsurdValidator } from 'src/app/shared/validators/date-is-absurd.validator';
-import { TimeEntriesFacade } from './time-entries.facade';
+import { WorklogFacade } from './worklog.facade';
 import { AlertService } from 'src/app/shared/component/alerts/alert.service';
+import { getTimeTemplate } from 'src/app/shared/common.date';
 
 const invalidDateRange: ValidatorFn = (formGroup: FormGroup) => {
     const start = formGroup.controls.start.value;
@@ -19,12 +20,12 @@ const invalidDateRange: ValidatorFn = (formGroup: FormGroup) => {
 };
 
 @Component({
-    selector: 'tojira-time-entries',
-    templateUrl: './time-entries.component.html'
+    selector: 'tojira-worklog',
+    templateUrl: './worklog.component.html'
 })
-export class TimeEntriesComponent implements OnInit, OnDestroy {
+export class WorklogComponent implements OnInit, OnDestroy {
     constructor(
-        private timeEntriesFacade: TimeEntriesFacade,
+        private worklogFacade: WorklogFacade,
         private formBuilder: FormBuilder,
         private alertService: AlertService) { }
 
@@ -33,15 +34,19 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
 
     tasks: Task[] = [];
     completion = 0;
+    totalTime = 0;
+    done = false;
 
     tasksSubscription: Subscription;
     completionSubscription: Subscription;
+    doneSubscription: Subscription;
 
     ngOnInit() {
         this.formInit();
-        this.timeEntriesFacade.init();
+        this.worklogFacade.init();
         this.listenToTaskLoad();
         this.listenToCompletion();
+        this.listenToRegistrationDone();
 
         if (!this.settingsAreSetted()) {
             this.alertService.warning('Some of the required settings isn\'t setted');
@@ -49,12 +54,15 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
     }
 
     public settingsAreSetted(): boolean {
-        return this.timeEntriesFacade.settingsAreSetted();
+        return this.worklogFacade.settingsAreSetted();
     }
 
     ngOnDestroy() {
         doUnsubscribe(this.completionSubscription);
-        this.timeEntriesFacade.destroy();
+        doUnsubscribe(this.tasksSubscription);
+        doUnsubscribe(this.doneSubscription);
+
+        this.worklogFacade.destroy();
     }
 
     private formInit() {
@@ -78,20 +86,32 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
     }
 
     private listenToTaskLoad() {
-        this.tasksSubscription = this.timeEntriesFacade.getTasksSubject()
+        this.tasksSubscription = this.worklogFacade.getTasksSubject()
             .subscribe(tasks => {
                 this.tasks = tasks;
+                this.calculateTotalTime();
             });
     }
 
+    private calculateTotalTime() {
+        this.totalTime = this.tasks.reduce((total, task) => {
+            return total += task.timeEntries.reduce((time, entry) => {
+                return time += entry.duration;
+            }, 0);
+        }, 0);
+    }
+
     private listenToCompletion() {
-        this.completionSubscription = this.timeEntriesFacade.getCompletionSubject()
+        this.completionSubscription = this.worklogFacade.getCompletionSubject()
             .subscribe(completion => {
                 this.completion = completion;
+            });
+    }
 
-                if (completion === 100) {
-                    doUnsubscribe(this.tasksSubscription);
-                }
+    private listenToRegistrationDone() {
+        this.doneSubscription = this.worklogFacade.getDoneSubject()
+            .subscribe(done => {
+                this.done = done;
             });
     }
 
@@ -101,29 +121,31 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
         const start = new Date(`${this.start.value} 00:00:00`);
         const end = new Date(`${this.end.value} 23:59:59`);
 
-        this.timeEntriesFacade
+        this.worklogFacade
             .loadTasks(start.toISOString(), end.toISOString());
     }
 
     private clear() {
         this.tasks.splice(0, this.tasks.length);
         this.completion = 0;
+        this.totalTime = 0;
+        this.done = false;
 
         this.tasksFormInit();
     }
 
     public registerWorklogs() {
-        const timeEntriesToRegister = this.getTimeEntriesToRegsiter();
+        const timeEntriesToRegister = this.getSelectedTimeEntries();
 
         if (!timeEntriesToRegister.length) {
             this.alertService.warning('Select unless one time entry to register');
             return;
         }
 
-        this.timeEntriesFacade.registerWorklogs(timeEntriesToRegister);
+        this.worklogFacade.registerWorklogs(timeEntriesToRegister);
     }
 
-    private getTimeEntriesToRegsiter(): number[] {
+    private getSelectedTimeEntries(): number[] {
         const timeEntriesToRegister = [];
 
         this.tasksForm.controls.forEach((taskForm: FormGroup) => {
@@ -187,5 +209,13 @@ export class TimeEntriesComponent implements OnInit, OnDestroy {
 
     public formHaveErrors(): boolean {
         return (!!this.filtersForm.invalid && !!this.filtersForm.errors);
+    }
+
+    public getFormattedTotalTime(): string {
+        return getTimeTemplate(this.totalTime);
+    }
+
+    public shouldDisableRegisterWorklogsButton(): boolean {
+        return (!this.allTasksAreLoaded() || !this.settingsAreSetted() || this.done);
     }
 }

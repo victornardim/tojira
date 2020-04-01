@@ -8,18 +8,18 @@ import { Task } from 'src/app/model/task.interface';
 import { TaskTranslator } from 'src/app/translator/task.translator';
 import { TimeEntryTranslator } from 'src/app/translator/time-entry.translator';
 import { extractTaskKey } from 'src/app/shared/common.extractor';
-import { doUnsubscribe, isSubscribed } from 'src/app/shared/common.subscription';
+import { doUnsubscribe } from 'src/app/shared/common.subscription';
 import { SettingsSingleton } from 'src/app/service/settings.singleton';
 import { AlertService } from 'src/app/shared/component/alerts/alert.service';
 import { WorklogRegistration } from 'src/app/model/worklog-registration.interface';
 import { WorklogRegistrationTranslator } from 'src/app/translator/worklog-registration.translator';
 import { WorklogProcessService } from './worklog-process.service';
-import { TimeEntryOperation } from './time-entry-operation.enum';
+import { WorklogOperation } from './worklog-operation.enum';
 
 @Injectable({
     providedIn: 'root'
 })
-export class TimeEntriesFacade {
+export class WorklogFacade {
     constructor(
         private jira: JiraService,
         private toggl: TogglService,
@@ -36,6 +36,7 @@ export class TimeEntriesFacade {
 
     private tasksSubject = new Subject<Task[]>();
     private completionSubject = new Subject<number>();
+    private doneSubject = new Subject<boolean>();
 
     private taskTranslator = new TaskTranslator();
     private timeEntryTranslator = new TimeEntryTranslator();
@@ -142,7 +143,7 @@ export class TimeEntriesFacade {
                 this.tasks.push(this.taskTranslator.translate(task, this.getTaskTimeEntries(task)));
                 this.tasksSubject.next(this.tasks);
 
-                this.doProgress(TimeEntryOperation.LOAD);
+                this.doProgress(WorklogOperation.LOAD);
             });
 
         this.tasksSubscriptions.push(subscription);
@@ -156,18 +157,22 @@ export class TimeEntriesFacade {
         return this.timeEntries.filter(timeEntry => extractTaskKey(timeEntry.description, this.getJiraTasksAllowedPrefixes()) === task.key);
     }
 
-    private doProgress(operation: TimeEntryOperation): void {
+    private doProgress(operation: WorklogOperation): void {
         this.processedTasks++;
         this.setCompletion(operation);
     }
 
-    private setCompletion(operation: TimeEntryOperation): void {
+    private setCompletion(operation: WorklogOperation): void {
         const completion = Math.round(this.processedTasks / (this.taskQuantity / 100));
         this.completionSubject.next(completion);
 
         if (completion === 100) {
             this.doUnsubscribeAll();
             this.alertService.success(this.getCompletionMessage(operation));
+
+            if (operation === WorklogOperation.REGISTRATION) {
+                this.doneSubject.next(true);
+            }
         }
     }
 
@@ -179,10 +184,10 @@ export class TimeEntriesFacade {
         this.tasksSubscriptions.splice(0, this.tasksSubscriptions.length);
     }
 
-    private getCompletionMessage(operation: TimeEntryOperation): string {
-        if (operation === TimeEntryOperation.LOAD) {
+    private getCompletionMessage(operation: WorklogOperation): string {
+        if (operation === WorklogOperation.LOAD) {
             return 'Time entries loaded successfully';
-        } else if (operation === TimeEntryOperation.REGISTRATION) {
+        } else if (operation === WorklogOperation.REGISTRATION) {
             return 'Time entries registered successfully';
         }
 
@@ -221,12 +226,12 @@ export class TimeEntriesFacade {
 
     private registerNewWorklog(taskKey: string, worklog: any): void {
         this.jira.registerWorklog(taskKey, worklog, this.getJiraToken())
-            .subscribe((worklog) => {
+            .subscribe(() => {
                 this.worklogProcessService.doProgress(taskKey);
             }, (error) => {
                 this.worklogProcessService.throwError(taskKey);
             }).add(() => {
-                this.doProgress(TimeEntryOperation.REGISTRATION);
+                this.doProgress(WorklogOperation.REGISTRATION);
             });
     }
 
@@ -243,5 +248,9 @@ export class TimeEntriesFacade {
 
     public getCompletionSubject(): Subject<number> {
         return this.completionSubject;
+    }
+
+    public getDoneSubject(): Subject<boolean> {
+        return this.doneSubject;
     }
 }

@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TimeInSeconds } from 'src/app/shared/time-in-seconds.enum';
 import { Task } from 'src/app/model/task.interface';
 import { SettingsSingleton } from 'src/app/service/settings.singleton';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { WorklogStatus } from 'src/app/model/worklog-status.enum';
+import { getTimeTemplate } from 'src/app/shared/common.date';
 
 @Component({
     selector: 'tojira-task',
@@ -40,26 +40,7 @@ export class TaskComponent implements OnInit {
     }
 
     public getTimeTemplate(seconds: number): string {
-        let days = 0;
-        let hours = 0;
-        let minutes = 0;
-
-        if (seconds >= TimeInSeconds.DAY) {
-            days = Math.floor(seconds / TimeInSeconds.DAY);
-            seconds %= TimeInSeconds.DAY;
-        }
-
-        if (seconds >= TimeInSeconds.HOUR) {
-            hours = Math.floor(seconds / TimeInSeconds.HOUR);
-            seconds %= TimeInSeconds.HOUR;
-        }
-
-        if (seconds >= TimeInSeconds.MINUTE) {
-            minutes = Math.floor(seconds / TimeInSeconds.MINUTE);
-            seconds %= TimeInSeconds.MINUTE;
-        }
-
-        return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        return getTimeTemplate(seconds);
     }
 
     public getStatusIcon(): string {

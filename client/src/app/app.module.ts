@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TimeEntriesComponent } from './component/time-entry/time-entries.component';
+import { WorklogComponent } from './component/worklog/worklog.component';
 import { TaskComponent } from './component/task/task.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { SettingsComponent } from './component/settings/settings.component';
@@ -15,7 +15,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DebounceDirective } from './shared/directives/debounce.directive';
 
 const appRoutes: Routes = [
-  { path: 'time-entries', component: TimeEntriesComponent },
+  { path: 'time-entries', component: WorklogComponent },
   { path: '', redirectTo: '/time-entries', pathMatch: 'full' },
   { path: 'settings', component: SettingsComponent }
 ];
@@ -23,7 +23,7 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    TimeEntriesComponent,
+    WorklogComponent,
     TaskComponent,
     SettingsComponent,
     DebounceDirective
