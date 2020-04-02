@@ -1,0 +1,25 @@
+<div style="font-size: small;">
+    <div class="row">
+        <div class="ml-3"
+             style="width: 75%">
+            <span> {{ timeEntry.at.toLocaleDateString() }} - {{ getTimeTemplate(timeEntry.duration) }}
+            </span>
+            <i class="far fa-comment ml-2"
+               *ngIf="!!timeEntry.comment"
+               [ngbPopover]="timeEntry.comment"
+               triggers="mouseenter:mouseleave"
+               container="body"></i>
+        </div>
+        <form [formGroup]="timeEntryForm">
+            <div class="custom-control custom-switch">
+                <input checked
+                       type="checkbox"
+                       formControlName="willSend"
+                       class="custom-control-input"
+                       [id]="timeEntry.id">
+                <label class="custom-control-label"
+                       [for]="timeEntry.id"></label>
+            </div>
+        </form>
+    </div>
+</div>

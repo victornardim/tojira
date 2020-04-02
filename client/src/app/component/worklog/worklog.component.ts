@@ -53,21 +53,13 @@ export class WorklogComponent implements OnInit, OnDestroy {
         }
     }
 
-    public settingsAreSetted(): boolean {
-        return this.worklogFacade.settingsAreSetted();
-    }
-
-    ngOnDestroy() {
-        doUnsubscribe(this.completionSubscription);
-        doUnsubscribe(this.tasksSubscription);
-        doUnsubscribe(this.doneSubscription);
-
-        this.worklogFacade.destroy();
-    }
-
     private formInit() {
         this.filtersFormInit();
         this.tasksFormInit();
+    }
+
+    public settingsAreSetted(): boolean {
+        return this.worklogFacade.settingsAreSetted();
     }
 
     private filtersFormInit() {
@@ -115,6 +107,14 @@ export class WorklogComponent implements OnInit, OnDestroy {
             });
     }
 
+    ngOnDestroy() {
+        doUnsubscribe(this.completionSubscription);
+        doUnsubscribe(this.tasksSubscription);
+        doUnsubscribe(this.doneSubscription);
+
+        this.worklogFacade.destroy();
+    }
+
     public loadTasks() {
         this.clear();
 
@@ -135,28 +135,28 @@ export class WorklogComponent implements OnInit, OnDestroy {
     }
 
     public registerWorklogs() {
-        const timeEntriesToRegister = this.getSelectedTimeEntries();
+        const selectedTimeEntries = this.getSelectedTimeEntries();
 
-        if (!timeEntriesToRegister.length) {
+        if (!selectedTimeEntries.length) {
             this.alertService.warning('Select unless one time entry to register');
             return;
         }
 
-        this.worklogFacade.registerWorklogs(timeEntriesToRegister);
+        this.worklogFacade.registerWorklogs(selectedTimeEntries);
     }
 
     private getSelectedTimeEntries(): number[] {
-        const timeEntriesToRegister = [];
+        const selectedTimeEntries = [];
 
         this.tasksForm.controls.forEach((taskForm: FormGroup) => {
             (taskForm.controls.timeEntries as FormArray).controls.forEach((timeEntryForm: FormGroup) => {
                 if (!!timeEntryForm.controls.willSend.value) {
-                    timeEntriesToRegister.push(timeEntryForm.controls.id.value);
+                    selectedTimeEntries.push(timeEntryForm.controls.id.value);
                 }
             });
         });
 
-        return timeEntriesToRegister;
+        return selectedTimeEntries;
     }
 
     public allTasksAreLoaded(): boolean {

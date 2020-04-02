@@ -13,6 +13,7 @@ import { SettingsComponent } from './component/settings/settings.component';
 import { AlertsModule } from './shared/component/alerts/alerts.module';
 import { Routes, RouterModule } from '@angular/router';
 import { DebounceDirective } from './shared/directives/debounce.directive';
+import { TimeEntryComponent } from './component/time-entry/time-entry.component';
 
 const appRoutes: Routes = [
   { path: 'time-entries', component: WorklogComponent },
@@ -25,6 +26,7 @@ const appRoutes: Routes = [
     AppComponent,
     WorklogComponent,
     TaskComponent,
+    TimeEntryComponent,
     SettingsComponent,
     DebounceDirective
   ],

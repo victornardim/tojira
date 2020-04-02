@@ -3,7 +3,6 @@ import { Task } from 'src/app/model/task.interface';
 import { SettingsSingleton } from 'src/app/service/settings.singleton';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { WorklogStatus } from 'src/app/model/worklog-status.enum';
-import { getTimeTemplate } from 'src/app/shared/common.date';
 
 @Component({
     selector: 'tojira-task',
@@ -29,18 +28,7 @@ export class TaskComponent implements OnInit {
             timeEntries: this.formBuilder.array([])
         });
 
-        this.task.timeEntries.forEach(timeEntry => {
-            (this.taskForm.controls.timeEntries as FormArray).push(this.formBuilder.group({
-                id: [timeEntry.id],
-                willSend: [true]
-            }));
-        });
-
         this.parentGroup.push(this.taskForm);
-    }
-
-    public getTimeTemplate(seconds: number): string {
-        return getTimeTemplate(seconds);
     }
 
     public getStatusIcon(): string {
@@ -61,5 +49,9 @@ export class TaskComponent implements OnInit {
 
     public get jiraPrefix(): string {
         return this.settings.jiraPrefix;
+    }
+
+    public getTimeEntriesForm(): FormArray {
+        return (this.taskForm.controls.timeEntries as FormArray);
     }
 }

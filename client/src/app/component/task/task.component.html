@@ -29,32 +29,9 @@
              container="body"> {{ task.type }}</div>
         <div class="card-text font-weight-bold text-muted pt-2"> Time entries:</div>
         <form [formGroup]="taskForm">
-            <div formArrayName="timeEntries">
-                <div *ngFor="let entry of task.timeEntries; let idx = index;"
-                     style="font-size: small;">
-                    <div class="row"
-                         [formGroupName]="idx">
-                        <div class="ml-3"
-                             style="width: 75%">
-                            <span> {{ entry.at.toLocaleDateString() }} - {{ getTimeTemplate(entry.duration) }}
-                            </span>
-                            <i class="far fa-comment ml-2"
-                               *ngIf="!!entry.comment"
-                               [ngbPopover]="entry.comment"
-                               triggers="mouseenter:mouseleave"
-                               container="body"></i>
-                        </div>
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox"
-                                   formControlName="willSend"
-                                   checked
-                                   class="custom-control-input"
-                                   [id]="entry.id">
-                            <label class="custom-control-label"
-                                   [for]="entry.id"></label>
-                        </div>
-                    </div>
-                </div>
+            <div *ngFor="let timeEntry of task.timeEntries;">
+                <tojira-time-entry [timeEntry]="timeEntry"
+                                   [parentGroup]="getTimeEntriesForm()"></tojira-time-entry>
             </div>
         </form>
     </div>
