@@ -1,7 +1,7 @@
 import { WorklogRegistration } from '../model/worklog-registration.interface';
 import { Task } from '../model/task.interface';
 import { TimeEntry } from '../model/time-entry.interface';
-import { getTimeISOStringWithTimezoneOffset } from '../shared/common.date';
+import { getTimeISOStringWithTimezoneOffset } from '../shared/util/date/date.util';
 
 export class WorklogRegistrationTranslator {
     task: Task;

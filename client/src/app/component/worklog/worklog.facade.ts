@@ -7,14 +7,14 @@ import { TimeEntry } from 'src/app/model/time-entry.interface';
 import { Task } from 'src/app/model/task.interface';
 import { TaskTranslator } from 'src/app/translator/task.translator';
 import { TimeEntryTranslator } from 'src/app/translator/time-entry.translator';
-import { extractTaskKey } from 'src/app/shared/common.extractor';
-import { doUnsubscribe } from 'src/app/shared/common.subscription';
 import { SettingsSingleton } from 'src/app/service/settings.singleton';
 import { AlertService } from 'src/app/shared/component/alerts/alert.service';
 import { WorklogRegistration } from 'src/app/model/worklog-registration.interface';
 import { WorklogRegistrationTranslator } from 'src/app/translator/worklog-registration.translator';
 import { WorklogProcessService } from './worklog-process.service';
 import { WorklogOperation } from './worklog-operation.enum';
+import { doUnsubscribe } from 'src/app/shared/util/subscription/subscription.util';
+import { extractTaskKey } from 'src/app/shared/util/extractor/extractor.util';
 
 @Injectable({
     providedIn: 'root'

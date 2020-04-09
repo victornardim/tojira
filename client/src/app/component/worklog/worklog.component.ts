@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Task } from 'src/app/model/task.interface';
 import { Subscription } from 'rxjs';
-import { doUnsubscribe } from 'src/app/shared/common.subscription';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, FormArray } from '@angular/forms';
 import { dateIsAbsurdValidator } from 'src/app/shared/validators/date-is-absurd.validator';
 import { WorklogFacade } from './worklog.facade';
 import { AlertService } from 'src/app/shared/component/alerts/alert.service';
-import { getTimeTemplate } from 'src/app/shared/common.date';
+import { getTimeTemplate } from 'src/app/shared/util/date/date.util';
+import { doUnsubscribe } from 'src/app/shared/util/subscription/subscription.util';
 
 const invalidDateRange: ValidatorFn = (formGroup: FormGroup) => {
     const start = formGroup.controls.start.value;

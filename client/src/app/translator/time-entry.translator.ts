@@ -1,5 +1,5 @@
 import { TimeEntry } from '../model/time-entry.interface';
-import { extractTaskComment } from '../shared/common.extractor';
+import { extractTaskComment } from '../shared/util/extractor/extractor.util';
 
 export class TimeEntryTranslator {
     timeEntry: any;

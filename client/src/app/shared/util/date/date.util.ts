@@ -1,4 +1,4 @@
-import { TimeInSeconds } from './time-in-seconds.enum';
+import { TimeInSeconds } from '../../time-in-seconds.enum';
 
 export function getTimeISOStringWithTimezoneOffset(time: Date): string {
     const offsetInHours = (time.getTimezoneOffset() / TimeInSeconds.MINUTE);
@@ -11,6 +11,10 @@ export function getTimeISOStringWithTimezoneOffset(time: Date): string {
 }
 
 export function getTimeTemplate(seconds: number): string {
+    if (seconds < 0) {
+        throw new Error("Seconds can't be negative");
+    }
+
     let days = 0;
     let hours = 0;
     let minutes = 0;

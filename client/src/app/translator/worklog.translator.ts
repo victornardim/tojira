@@ -1,4 +1,4 @@
-import { extractTogglId } from '../shared/common.extractor';
+import { extractTogglId } from '../shared/util/extractor/extractor.util';
 
 export class WorklogTranslator {
     private worklog: any;

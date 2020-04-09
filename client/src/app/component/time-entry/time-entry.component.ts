@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { TimeEntry } from 'src/app/model/time-entry.interface';
-import { getTimeTemplate } from 'src/app/shared/common.date';
+import { getTimeTemplate } from 'src/app/shared/util/date/date.util';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({

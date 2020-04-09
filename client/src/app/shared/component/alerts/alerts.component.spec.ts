@@ -1,13 +1,14 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
 import { AlertsComponent } from './alerts.component';
 import { AlertType } from './alert.enum';
 import { Alert } from './alert.interface';
+import { AlertService } from './alert.service';
 
 describe('AlertsComponent', () => {
-    let fixture = null;
-    let app = null;
+    let component: AlertsComponent;
+    let fixture: ComponentFixture<AlertsComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -16,23 +17,27 @@ describe('AlertsComponent', () => {
             ],
             imports: [
                 NgbModule
+            ],
+            providers: [
+                AlertService
             ]
         }).compileComponents();
     }));
 
     beforeEach(() => {
         fixture = TestBed.createComponent(AlertsComponent);
-        app = fixture.debugElement.componentInstance;
+        component = fixture.debugElement.componentInstance;
 
-        spyOn(app.logService, 'getLogsSubject').and.returnValue(of(getLogs()));
+        const alertService = TestBed.get(AlertService);
+        spyOn(alertService, 'getAlertsSubject').and.returnValue(of(getAlerts()));
 
-        app.ngOnInit();
+        fixture.detectChanges();
     });
 
-    function getLogs(): Alert[] {
+    function getAlerts(): Alert[] {
         return [
             {
-                message: 'Simple log message',
+                message: 'Simple alert message',
                 time: new Date('2019-09-28 01:00:00'),
                 type: AlertType.INFO
             },
@@ -44,31 +49,15 @@ describe('AlertsComponent', () => {
     }
 
     it('should create the app', () => {
-        expect(app).toBeTruthy();
+        expect(component).toBeTruthy();
     });
 
-    it('should close one log', () => {
-        app.close({
+    it('should close one alert', () => {
+        component.close({
             message: 'Simple log message',
             time: new Date('2019-09-28 01:00:00'),
             type: AlertType.INFO
         });
-        expect(app.logs.length).toEqual(1);
-    });
-
-    it('should clear all logs when confirm the dialog', () => {
-        spyOn(window, 'confirm').and.returnValue(true);
-
-        app = fixture.debugElement.componentInstance;
-        app.clearAll();
-        expect(app.logs.length).toEqual(0);
-    });
-
-    it('should not clear all logs when cancel the dialog', () => {
-        spyOn(window, 'confirm').and.returnValue(false);
-
-        app = fixture.debugElement.componentInstance;
-        app.clearAll();
-        expect(app.logs.length).toEqual(2);
+        expect(component.alerts.length).toEqual(1);
     });
 });
