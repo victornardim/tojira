@@ -1,9 +1,9 @@
 import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ReactiveFormsModule, FormArray, FormBuilder } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { AlertComponent } from './alert.component';
-import { Alert } from '../alert.interface';
 import { AlertType } from '../alert.enum';
+import { getAlert } from '../alert.mock';
 
 describe('AlertComponent', () => {
     let component: AlertComponent;
@@ -31,14 +31,6 @@ describe('AlertComponent', () => {
 
         fixture.detectChanges();
     });
-
-    function getAlert(): Alert {
-        return {
-            message: 'Alert message',
-            time: new Date(),
-            type: AlertType.SUCCESS
-        } as Alert;
-    }
 
     it('should create the app', () => {
         expect(component).toBeTruthy();

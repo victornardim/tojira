@@ -3,8 +3,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { of } from 'rxjs';
 import { AlertsComponent } from './alerts.component';
 import { AlertType } from './alert.enum';
-import { Alert } from './alert.interface';
 import { AlertService } from './alert.service';
+import { getAlerts } from './alert.mock';
 
 describe('AlertsComponent', () => {
     let component: AlertsComponent;
@@ -33,20 +33,6 @@ describe('AlertsComponent', () => {
 
         fixture.detectChanges();
     });
-
-    function getAlerts(): Alert[] {
-        return [
-            {
-                message: 'Simple alert message',
-                time: new Date('2019-09-28 01:00:00'),
-                type: AlertType.INFO
-            },
-            {
-                message: 'Error',
-                time: new Date('2019-09-28 02:00:00'),
-                type: AlertType.DANGER
-            }] as Alert[];
-    }
 
     it('should create the app', () => {
         expect(component).toBeTruthy();

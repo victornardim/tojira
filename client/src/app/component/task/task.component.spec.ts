@@ -1,9 +1,9 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { Task } from 'src/app/model/task.interface';
-import { ReactiveFormsModule, FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormArray, FormBuilder } from '@angular/forms';
 import { TaskComponent } from '../task/task.component';
 import { WorklogStatus } from 'src/app/model/worklog-status.enum';
+import { getTask } from './task.mock';
 
 describe('TaskComponent', () => {
     let component: TaskComponent;
@@ -33,19 +33,6 @@ describe('TaskComponent', () => {
     function getParentGroup(): FormArray {
         const formBuilder = new FormBuilder();
         return formBuilder.array([]);
-    }
-
-    function getTask(): Task {
-        return {
-            id: 1,
-            description: 'Test task',
-            assignee: 'test@test.com',
-            key: 'TASK-123',
-            status: WorklogStatus.PENDING,
-            timeEntries: [],
-            type: 'Task type',
-            worklogs: []
-        } as Task;
     }
 
     it('should create the app', () => {

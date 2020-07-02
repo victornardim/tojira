@@ -15,6 +15,7 @@ import { WorklogProcessService } from './worklog-process.service';
 import { WorklogOperation } from './worklog-operation.enum';
 import { doUnsubscribe } from 'src/app/shared/util/subscription/subscription.util';
 import { extractTaskKey } from 'src/app/shared/util/extractor/extractor.util';
+import { TimeInSeconds } from 'src/app/shared/time-in-seconds.enum';
 
 @Injectable({
     providedIn: 'root'
@@ -105,7 +106,7 @@ export class WorklogFacade {
 
     private getAllTimeEntries(timeEntries: any[]): void {
         timeEntries.forEach(timeEntry => {
-            if (this.isJiraTask(timeEntry)) {
+            if (this.isJiraTask(timeEntry) && timeEntry.duration >= TimeInSeconds.MINUTE) {
                 this.timeEntries.push(this.timeEntryTranslator.translate(timeEntry));
             }
         });
@@ -140,8 +141,13 @@ export class WorklogFacade {
     private getTask(key: string): void {
         const subscription = this.jira.getTask(key, this.getJiraToken())
             .subscribe((task: any) => {
-                this.tasks.push(this.taskTranslator.translate(task, this.getTaskTimeEntries(task)));
-                this.tasksSubject.next(this.tasks);
+                try {
+                    this.tasks.push(this.taskTranslator.translate(task, this.getTaskTimeEntries(task)));
+                    this.tasksSubject.next(this.tasks);
+                } catch (ex) {
+                    this.alertService.error(ex.message);
+                    throw ex;
+                }
 
                 this.doProgress(WorklogOperation.LOAD);
             });

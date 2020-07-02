@@ -3,7 +3,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SettingsComponent } from './settings.component';
 import { SettingsFacade } from './settings.facade';
-import { Settings } from 'src/app/model/settings.interface';
+import { getSettings } from './settings.mock';
 
 describe('SettingsComponent', () => {
     let component: SettingsComponent;
@@ -30,16 +30,6 @@ describe('SettingsComponent', () => {
 
         fixture.detectChanges();
     });
-
-    function getSettings(): Settings {
-        return {
-            jiraToken: 'FAKE_JIRA_TOKEN',
-            jiraUser: 'FAKE_USER',
-            jiraPrefix: 'FAKE_PREFIX',
-            jiraTasksAllowedPrefixes: 'FAKE_ALLOWED_PREFIX',
-            togglToken: 'FAKE_TOGGL_TOKEN'
-        } as Settings;
-    }
 
     it('should create the app', () => {
         expect(component).toBeTruthy();
