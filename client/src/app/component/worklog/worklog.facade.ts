@@ -106,7 +106,7 @@ export class WorklogFacade {
 
     private getAllTimeEntries(timeEntries: any[]): void {
         timeEntries.forEach(timeEntry => {
-            if (this.isJiraTask(timeEntry) && timeEntry.duration >= TimeInSeconds.MINUTE) {
+            if (this.isJiraTask(timeEntry) && this.isDurationGreaterOrEqualOneMinute(timeEntry)) {
                 this.timeEntries.push(this.timeEntryTranslator.translate(timeEntry));
             }
         });
@@ -118,6 +118,10 @@ export class WorklogFacade {
 
     private getJiraTasksAllowedPrefixes(): string[] {
         return this.settings.jiraTasksAllowedPrefixes.split(';');
+    }
+
+    private isDurationGreaterOrEqualOneMinute(timeEntry: any): boolean {
+        return (timeEntry.duration >= TimeInSeconds.MINUTE);
     }
 
     private getUniqueTaskKeys(): void {
@@ -141,15 +145,18 @@ export class WorklogFacade {
     private getTask(key: string): void {
         const subscription = this.jira.getTask(key, this.getJiraToken())
             .subscribe((task: any) => {
-                try {
-                    this.tasks.push(this.taskTranslator.translate(task, this.getTaskTimeEntries(task)));
-                    this.tasksSubject.next(this.tasks);
-                } catch (ex) {
-                    this.alertService.error(ex.message);
-                    throw ex;
+                this.doProgress(WorklogOperation.LOAD);
+
+                if (!this.taskHaveAssignee(task)) {
+                    this.alertService.warning(`Task ${task.key} don\'t have an assignee`);
+                    return;
+                } else if (!this.isTheSameAssigneeOfTheSettings(task)) {
+                    this.alertService.warning(`The assignee of the task ${task.key} isn\'t ${this.settings.jiraUser}`);
+                    return;
                 }
 
-                this.doProgress(WorklogOperation.LOAD);
+                this.tasks.push(this.taskTranslator.translate(task, this.getTaskTimeEntries(task)));
+                this.tasksSubject.next(this.tasks);
             });
 
         this.tasksSubscriptions.push(subscription);
@@ -157,6 +164,14 @@ export class WorklogFacade {
 
     private getJiraToken(): string {
         return btoa(`${this.settings.jiraUser}:${this.settings.jiraToken}`);
+    }
+
+    private taskHaveAssignee(timeEntry: any): boolean {
+        return (!!timeEntry.fields.assignee);
+    }
+
+    private isTheSameAssigneeOfTheSettings(timeEntry: any): boolean {
+        return (timeEntry.fields.assignee.emailAddress === this.settings.jiraUser);
     }
 
     private getTaskTimeEntries(task: Task): TimeEntry[] {

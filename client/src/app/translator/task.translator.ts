@@ -15,10 +15,6 @@ export class TaskTranslator {
     public translate(task: any, timeEntries: any[]): Task {
         this.task = task;
 
-        if (!task.fields.assignee) {
-            throw new Error(`The task ${task.key} don\'t have an assignee.`);
-        }
-
         return {
             id: task.id,
             key: task.key,
