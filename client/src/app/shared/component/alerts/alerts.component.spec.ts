@@ -5,6 +5,7 @@ import { AlertsComponent } from './alerts.component';
 import { AlertType } from './alert.enum';
 import { AlertService } from './alert.service';
 import { getAlerts } from './alert.mock';
+import { AlertComponent } from './alert/alert.component';
 
 describe('AlertsComponent', () => {
     let component: AlertsComponent;
@@ -13,7 +14,8 @@ describe('AlertsComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
-                AlertsComponent
+                AlertsComponent,
+                AlertComponent
             ],
             imports: [
                 NgbModule

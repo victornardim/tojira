@@ -8,7 +8,7 @@ describe('DateUtil', () => {
     });
 
     it('should return a valid time template when seconds are superior than zero', () => {
-        expect(getTimeTemplate(15000)).toEqual('0d 4h 10m 0s');
+        expect(getTimeTemplate(101401)).toEqual('1d 4h 10m 1s');
     });
 
     it('should return a valid time template when seconds are zero', () => {

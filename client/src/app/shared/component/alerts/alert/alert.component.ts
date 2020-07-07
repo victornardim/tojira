@@ -3,7 +3,7 @@ import { Alert } from '../alert.interface';
 import { AlertType } from '../alert.enum';
 
 @Component({
-    selector: 'app-alert',
+    selector: 'tojira-alert',
     templateUrl: './alert.component.html',
     styleUrls: ['./alert.component.css']
 })
