@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Subscription } from 'rxjs';
+import { of, Subject, Subscription } from 'rxjs';
 import { _ } from 'underscore/underscore';
 import { JiraService } from 'src/app/service/jira.service';
 import { TogglService } from 'src/app/service/toggl.service';
@@ -16,6 +16,7 @@ import { WorklogOperation } from './worklog-operation.enum';
 import { doUnsubscribe } from 'src/app/shared/util/subscription/subscription.util';
 import { extractTaskKey } from 'src/app/shared/util/extractor/extractor.util';
 import { TimeInSeconds } from 'src/app/shared/time-in-seconds.enum';
+import { delay,concatMap,mergeMap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -215,14 +216,18 @@ export class WorklogFacade {
         return '';
     }
 
-    public registerWorklogs(timeEntriesId: number[]): void {
+   public registerWorklogs(timeEntriesId: number[]): void {
         this.resetCompletion(timeEntriesId.length);
 
         const tasksToRegisterWorklog = this.getTasksToRegisterWorklog(timeEntriesId);
         this.worklogProcessService.init(tasksToRegisterWorklog);
 
         tasksToRegisterWorklog.forEach(taskToRegisterWorklog => {
-            taskToRegisterWorklog.task.worklogs.forEach(worklog => {
+            of(taskToRegisterWorklog.task.worklogs)
+            .pipe(
+                mergeMap((data: any) => of(...data)),
+                concatMap(data => of(data).pipe(delay(500)))
+            ).subscribe(worklog => {
                 if (!worklog.oldId) {
                     this.registerNewWorklog(taskToRegisterWorklog.task.key, worklog);
                 } else {
