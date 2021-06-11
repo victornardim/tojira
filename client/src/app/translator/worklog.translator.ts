@@ -14,7 +14,7 @@ export class WorklogTranslator {
     }
 
     private getWorklogComment(): string {
-        if (!!this.worklog.comment) {
+        if (!!this.worklog.comment && !!this.worklog.comment.content[0] && !!this.worklog.comment.content[0].content[0]) {
             return this.worklog.comment.content[0].content[0].text;
         }
 
@@ -22,7 +22,7 @@ export class WorklogTranslator {
     }
 
     private getWorklogTogglId(): string {
-        if (!!this.worklog.comment) {
+        if (!!this.worklog.comment && !!this.worklog.comment.content[0] && !!this.worklog.comment.content[0].content[0]) {
             return extractTogglId(this.worklog.comment.content[0].content[0].text);
         }
 
